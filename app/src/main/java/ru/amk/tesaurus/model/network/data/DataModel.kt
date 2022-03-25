@@ -1,8 +1,6 @@
 package ru.amk.tesaurus.model.network.data
 
-import com.google.gson.annotations.SerializedName
-
 class DataModel(
-    @field:SerializedName("text") val text: String?,
-    @field:SerializedName("meanings") val meanings: List<Meanings>?
+    val text: String?,
+    val meanings: List<Meanings>?
 )

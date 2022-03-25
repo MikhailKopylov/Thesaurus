@@ -60,13 +60,11 @@ class MainActivity : BaseActivity<AppState>() {
                     showErrorScreen(getString(R.string.empty_server_response_on_success))
                 } else {
                     showViewSuccess()
-                    if (adapter == null) {
+                    adapter?.setData(dataModel) ?: run {
                         binding.mainActivityRecyclerview.layoutManager =
                             LinearLayoutManager(applicationContext)
                         binding.mainActivityRecyclerview.adapter =
                             MainAdapter(onListItemClickListener, dataModel)
-                    } else {
-                        adapter!!.setData(dataModel)
                     }
                 }
             }
