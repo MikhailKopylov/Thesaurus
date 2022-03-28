@@ -4,22 +4,15 @@ import androidx.lifecycle.LiveData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import ru.amk.tesaurus.entity.AppState
-import ru.amk.tesaurus.model.repository.DataSourceLocal
-import ru.amk.tesaurus.model.repository.DataSourceRemote
-import ru.amk.tesaurus.model.repository.RepositoryImpl
 import ru.amk.tesaurus.presentation.interactors.MainInteractor
 import ru.amk.tesaurus.rx.SchedulerProvider
-import ru.amk.tesaurus.rx.SchedulerProviderRx
+import javax.inject.Inject
 
-class MainActivityViewModel(
-    private val interactor: MainInteractor = MainInteractor(
-        RepositoryImpl(DataSourceRemote()),
-        RepositoryImpl(DataSourceLocal())
-    ),
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
-    private val schedulerProvider: SchedulerProvider = SchedulerProviderRx(),
+class MainActivityViewModel @Inject constructor(
+    private val interactor: MainInteractor,
+    private val compositeDisposable: CompositeDisposable,
+    private val schedulerProvider: SchedulerProvider,
 ) : BaseViewModel<AppState>() {
-
 
     override fun getData(word: String, isOnline: Boolean): LiveData<AppState> {
         compositeDisposable.add(

@@ -6,6 +6,7 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.android.AndroidInjection
 import ru.amk.tesaurus.databinding.ActivityMainBinding
 import ru.amk.tesaurus.entity.AppState
 import ru.amk.tesaurus.model.network.data.DataModel
@@ -14,12 +15,14 @@ import ru.amk.tesaurus.presentation.MainActivityViewModel
 import ru.amk.tesaurus.ui.adapter.MainAdapter
 import ru.amk.tesaurus.ui.fragments.SearchDialogFragment
 import ru.amk.tesaurus.ui.view.BaseActivity
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<AppState>() {
 
-    override val model: BaseViewModel<AppState> by lazy {
-        ViewModelProvider.NewInstanceFactory().create(MainActivityViewModel::class.java)
-    }
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    override lateinit var model: BaseViewModel<AppState>
     private lateinit var binding: ActivityMainBinding
     private var adapter: MainAdapter? = null
 
@@ -31,15 +34,18 @@ class MainActivity : BaseActivity<AppState>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        title = resources.getString(R.string.app_name)
         binding.searchFab.setOnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
 
                 override fun onClick(searchWord: String) {
+                    model = viewModelFactory.create(MainActivityViewModel::class.java)
                     model.getData(word = searchWord, isOnline = true).observe(
                         this@MainActivity
                     ) { renderData(it) }
