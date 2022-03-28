@@ -1,5 +1,6 @@
 package ru.amk.tesaurus.presentation
 
+import androidx.lifecycle.LiveData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import ru.amk.tesaurus.entity.AppState
@@ -9,49 +10,39 @@ import ru.amk.tesaurus.model.repository.RepositoryImpl
 import ru.amk.tesaurus.presentation.interactors.MainInteractor
 import ru.amk.tesaurus.rx.SchedulerProvider
 import ru.amk.tesaurus.rx.SchedulerProviderRx
-import ru.amk.tesaurus.ui.view.View
 
-class MainPresenterImpl<T : AppState, V : View>(
+class MainActivityViewModel(
     private val interactor: MainInteractor = MainInteractor(
         RepositoryImpl(DataSourceRemote()),
         RepositoryImpl(DataSourceLocal())
     ),
     private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
     private val schedulerProvider: SchedulerProvider = SchedulerProviderRx(),
-) : Presenter<T, V> {
-    private var currentView: V? = null
+) : BaseViewModel<AppState>() {
 
-    override fun attachView(view: V) {
-        if (view != currentView) {
-            currentView = view
-        }
-    }
 
-    override fun dettachView(view: V) {
-        compositeDisposable.clear()
-        if (view == currentView) {
-            currentView = null
-        }
-    }
-
-    override fun getData(word: String, isOnline: Boolean) {
+    override fun getData(word: String, isOnline: Boolean): LiveData<AppState> {
         compositeDisposable.add(
             interactor.getData(word, isOnline)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .doOnSubscribe { currentView?.renderData(AppState.Loading(null)) }
+                .doOnSubscribe {
+                    _liveData.value = AppState.Loading(progress = null)
+                    //TODO Реализовать прогресс загрузки
+                }
                 .subscribeWith(getObserver())
         )
+        return liveData
     }
 
     private fun getObserver(): DisposableObserver<AppState> {
         return object : DisposableObserver<AppState>() {
             override fun onNext(appState: AppState) {
-                currentView?.renderData(appState)
+                _liveData.value = appState
             }
 
             override fun onError(e: Throwable) {
-                currentView?.renderData(AppState.Error(e))
+                _liveData.value = AppState.Error(error = e)
             }
 
             override fun onComplete() {
