@@ -14,7 +14,8 @@ class MainActivityViewModel @Inject constructor(
     private val schedulerProvider: SchedulerProvider,
 ) : BaseViewModel<AppState>() {
 
-    override fun getData(word: String, isOnline: Boolean): LiveData<AppState> {
+
+    override fun getData(word: String, isOnline: Boolean){
         compositeDisposable.add(
             interactor.getData(word, isOnline)
                 .subscribeOn(schedulerProvider.io())
@@ -25,7 +26,6 @@ class MainActivityViewModel @Inject constructor(
                 }
                 .subscribeWith(getObserver())
         )
-        return liveData
     }
 
     private fun getObserver(): DisposableObserver<AppState> {

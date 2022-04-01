@@ -11,12 +11,12 @@ abstract class BaseViewModel<T : AppState>(
 ) : ViewModel() {
 
     protected val _liveData = MutableLiveData<AppState>()
-    protected val liveData: LiveData<AppState>
+    val liveData: LiveData<AppState>
         get() {
             return _liveData
         }
 
-    abstract fun getData(word: String, isOnline: Boolean): LiveData<T>
+    abstract fun getData(word: String, isOnline: Boolean)
 
     override fun onCleared() {
         compositeDisposable.clear()

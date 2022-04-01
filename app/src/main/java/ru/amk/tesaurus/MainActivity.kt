@@ -46,9 +46,10 @@ class MainActivity : BaseActivity<AppState>() {
 
                 override fun onClick(searchWord: String) {
                     model = viewModelFactory.create(MainActivityViewModel::class.java)
-                    model.getData(word = searchWord, isOnline = true).observe(
-                        this@MainActivity
-                    ) { renderData(it) }
+                    model.getData(word = searchWord, isOnline = true)
+                    model.liveData.observe(this@MainActivity) {
+                        renderData(it)
+                    }
                 }
             })
 
@@ -96,7 +97,8 @@ class MainActivity : BaseActivity<AppState>() {
         showViewError()
         binding.errorTextview.text = error ?: getString(R.string.undefined_error)
         binding.reloadButton.setOnClickListener {
-            model.getData("hi", true).observe(this) {
+            model.getData(word = "error", isOnline = true)
+            model.liveData.observe(this@MainActivity) {
                 renderData(it)
             }
         }
