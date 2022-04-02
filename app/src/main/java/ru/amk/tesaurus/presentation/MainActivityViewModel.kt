@@ -1,21 +1,19 @@
 package ru.amk.tesaurus.presentation
 
-import androidx.lifecycle.LiveData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import ru.amk.tesaurus.entity.AppState
 import ru.amk.tesaurus.presentation.interactors.MainInteractor
 import ru.amk.tesaurus.rx.SchedulerProvider
-import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(
+class MainActivityViewModel(
     private val interactor: MainInteractor,
     private val compositeDisposable: CompositeDisposable,
     private val schedulerProvider: SchedulerProvider,
 ) : BaseViewModel<AppState>() {
 
 
-    override fun getData(word: String, isOnline: Boolean){
+    override fun getData(word: String, isOnline: Boolean) {
         compositeDisposable.add(
             interactor.getData(word, isOnline)
                 .subscribeOn(schedulerProvider.io())

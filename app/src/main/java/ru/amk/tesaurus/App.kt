@@ -1,24 +1,16 @@
 package ru.amk.tesaurus
 
 import android.app.Application
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import ru.amk.tesaurus.di.DaggerAppComponent
-import javax.inject.Inject
+import org.koin.core.context.startKoin
+import ru.amk.tesaurus.di.AppModule.appModule
+import ru.amk.tesaurus.di.MainActivityModule.activityModule
 
-class App : Application(), HasAndroidInjector {
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
-
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DaggerAppComponent.builder()
-            .application(this)
-            .build()
-            .inject(this)
+        startKoin {
+            modules(listOf(appModule, activityModule))
+        }
     }
 }
