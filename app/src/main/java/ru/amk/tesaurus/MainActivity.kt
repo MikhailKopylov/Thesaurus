@@ -4,20 +4,28 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.android.AndroidInjection
 import ru.amk.tesaurus.databinding.ActivityMainBinding
 import ru.amk.tesaurus.entity.AppState
 import ru.amk.tesaurus.model.network.data.DataModel
-import ru.amk.tesaurus.presentation.MainPresenterImpl
-import ru.amk.tesaurus.presentation.Presenter
+import ru.amk.tesaurus.presentation.BaseViewModel
+import ru.amk.tesaurus.presentation.MainActivityViewModel
 import ru.amk.tesaurus.ui.adapter.MainAdapter
 import ru.amk.tesaurus.ui.fragments.SearchDialogFragment
 import ru.amk.tesaurus.ui.view.BaseActivity
-import ru.amk.tesaurus.ui.view.View
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<AppState>() {
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    override lateinit var model: BaseViewModel<AppState>
     private lateinit var binding: ActivityMainBinding
     private var adapter: MainAdapter? = null
+
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
@@ -25,23 +33,23 @@ class MainActivity : BaseActivity<AppState>() {
             }
         }
 
-    override fun createPresenter(): Presenter<AppState, View> {
-        return MainPresenterImpl<AppState, View>().apply {
-            attachView(this@MainActivity)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        title = resources.getString(R.string.app_name)
         binding.searchFab.setOnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
 
                 override fun onClick(searchWord: String) {
-                    presenter.getData(searchWord, true)
+                    model = viewModelFactory.create(MainActivityViewModel::class.java)
+                    model.getData(word = searchWord, isOnline = true)
+                    model.liveData.observe(this@MainActivity) {
+                        renderData(it)
+                    }
                 }
             })
 
@@ -89,7 +97,10 @@ class MainActivity : BaseActivity<AppState>() {
         showViewError()
         binding.errorTextview.text = error ?: getString(R.string.undefined_error)
         binding.reloadButton.setOnClickListener {
-            presenter.getData("hi", true)
+            model.getData(word = "error", isOnline = true)
+            model.liveData.observe(this@MainActivity) {
+                renderData(it)
+            }
         }
     }
 
