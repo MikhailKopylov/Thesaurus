@@ -1,6 +1,5 @@
 package ru.amk.tesaurus.presentation.interactors
 
-import io.reactivex.Observable
 import ru.amk.tesaurus.di.LOCAL_REPOSITORY
 import ru.amk.tesaurus.di.REMOTE_REPOSITORY
 import ru.amk.tesaurus.entity.AppState
@@ -14,12 +13,12 @@ class MainInteractor @Inject constructor(
     @Named(LOCAL_REPOSITORY) val localRepository: Repository<List<DataModel>>
 ) : Interactor<AppState> {
 
-    override fun getData(word: String, fromRemoteSource: Boolean):
-        Observable<AppState> {
+    override suspend fun getData(word: String, fromRemoteSource: Boolean):
+        AppState {
         return if (fromRemoteSource) {
-            remoteRepository.getData(word).map { AppState.Success(it) }
+            AppState.Success(remoteRepository.getData(word))
         } else {
-            localRepository.getData(word).map { AppState.Success(it) }
+            AppState.Success(localRepository.getData(word))
         }
     }
 }
