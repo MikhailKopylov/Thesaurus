@@ -1,14 +1,11 @@
 package ru.amk.tesaurus.presentation
 
-import androidx.lifecycle.LiveData
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.amk.tesaurus.entity.AppState
 import ru.amk.tesaurus.presentation.interactors.MainInteractor
-import ru.amk.tesaurus.rx.SchedulerProvider
 
 class MainActivityViewModel(
     private val interactor: MainInteractor,
