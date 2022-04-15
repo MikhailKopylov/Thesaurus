@@ -11,11 +11,10 @@ class MainActivityViewModel(
     private val interactor: MainInteractor,
 ) : BaseViewModel<AppState>() {
 
-
     override fun getData(word: String, isOnline: Boolean) {
         _liveData.value = AppState.Loading(null)
         cancelJob()
-        viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
+        job = viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
 
     }
 

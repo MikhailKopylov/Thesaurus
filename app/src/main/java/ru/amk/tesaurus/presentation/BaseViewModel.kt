@@ -11,12 +11,12 @@ abstract class BaseViewModel<T : AppState>(
     private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
 ) : ViewModel() {
 
+    protected var job: Job? = null
     abstract fun getData(word: String, isOnline: Boolean)
     abstract fun handleError(error: Throwable)
 
     protected val viewModelCoroutineScope = CoroutineScope(
-        Dispatchers.Main
-            + SupervisorJob()
+        SupervisorJob()
             + CoroutineExceptionHandler { _, throwable ->
             handleError(throwable)
         })
@@ -29,10 +29,14 @@ abstract class BaseViewModel<T : AppState>(
 
     override fun onCleared() {
         super.onCleared()
-        cancelJob()
+        cancelScope()
     }
 
-    protected fun cancelJob() {
-        viewModelCoroutineScope.coroutineContext.cancelChildren()
+    protected fun cancelScope() {
+        viewModelCoroutineScope.coroutineContext.cancel()
+    }
+
+    protected fun cancelJob(){
+        job?.cancel()
     }
 }

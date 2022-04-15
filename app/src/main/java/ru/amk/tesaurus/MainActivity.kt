@@ -39,7 +39,6 @@ class MainActivity : BaseActivity<AppState>() {
                 SearchDialogFragment.OnSearchClickListener {
 
                 override fun onClick(searchWord: String) {
-                    val model: MainActivityViewModel by viewModel()
                     model.getData(word = searchWord, isOnline = true)
                     model.liveData.observe(this@MainActivity) {
                         renderData(it)

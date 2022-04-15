@@ -10,7 +10,7 @@ object MainActivityModule {
 
     val activityModule = module {
 
-        factory { MainInteractor(get(named(REMOTE)), get(named(LOCAL))) }
+        factory { MainInteractor(remoteRepository = get(named(REMOTE)), localRepository = get(named(LOCAL))) }
 
         factory { MainActivityViewModel(get()) }
 
