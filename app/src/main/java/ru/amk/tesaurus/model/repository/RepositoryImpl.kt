@@ -1,12 +1,13 @@
 package ru.amk.tesaurus.model.repository
 
-import io.reactivex.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.amk.tesaurus.model.network.data.DataModel
 
 class RepositoryImpl(private val dataSource: DataSource<List<DataModel>>) :
     Repository<List<DataModel>> {
 
-    override fun getData(word: String): Observable<List<DataModel>> {
-        return dataSource.getData(word)
+    override suspend fun getData(word: String): List<DataModel> {
+        return withContext(Dispatchers.IO) { dataSource.getData(word) }
     }
 }
