@@ -4,28 +4,36 @@ import io.reactivex.observers.DisposableObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.amk.tesaurus.entity.AppState
-import ru.amk.tesaurus.presentation.interactors.MainInteractor
+import ru.amk.tesaurus.entity.AppResponseState
+import ru.amk.tesaurus.presentation.interactors.MainHistoryInteractor
+import ru.amk.tesaurus.presentation.interactors.MainTranslateInteractor
 
 class MainActivityViewModel(
-    private val interactor: MainInteractor,
-) : BaseViewModel<AppState>() {
+    private val translateInteractor: MainTranslateInteractor,
+    private val historyInteractor: MainHistoryInteractor,
+) : BaseViewModel<AppResponseState>() {
 
-    override fun getData(word: String, isOnline: Boolean) {
-        _liveData.value = AppState.Loading(null)
+    override fun getData() {
         cancelJob()
-        job = viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
-
+        historyJob = viewModelCoroutineScope.launch {
+            starHistoryInteractor()
+        }
     }
 
-    private fun getObserver(): DisposableObserver<AppState> {
-        return object : DisposableObserver<AppState>() {
-            override fun onNext(appState: AppState) {
-                _liveData.value = appState
+    override fun requestData(word: String, isOnline: Boolean) {
+        _translateLiveData.value = AppResponseState.Loading(null)
+        cancelJob()
+        translateJob = viewModelCoroutineScope.launch { starTranslatetInteractor(word, isOnline) }
+    }
+
+    private fun getObserver(): DisposableObserver<AppResponseState> {
+        return object : DisposableObserver<AppResponseState>() {
+            override fun onNext(appResponseState: AppResponseState) {
+                _translateLiveData.value = appResponseState
             }
 
             override fun onError(e: Throwable) {
-                _liveData.value = AppState.Error(error = e)
+                _translateLiveData.value = AppResponseState.Error(error = e)
             }
 
             override fun onComplete() {
@@ -33,17 +41,31 @@ class MainActivityViewModel(
         }
     }
 
-    private suspend fun startInteractor(word: String, isOnline: Boolean) =
+    private suspend fun starHistoryInteractor() =
         withContext(Dispatchers.IO) {
-            _liveData.postValue(interactor.getData(word, isOnline))
+            _historyLiveData.postValue(historyInteractor.getData())
+        }
+
+    private suspend fun starTranslatetInteractor(word: String, isOnline: Boolean) =
+        withContext(Dispatchers.IO) {
+            _translateLiveData.postValue(translateInteractor.getData(word, isOnline))
         }
 
     override fun handleError(error: Throwable) {
-        _liveData.postValue(AppState.Error(error))
+        _translateLiveData.postValue(AppResponseState.Error(error))
     }
 
     override fun onCleared() {
-        _liveData.value = AppState.Success(null)
+        _translateLiveData.value = AppResponseState.Success(null)
         super.onCleared()
     }
+
+    override fun saveWordHistory(word: String) {
+        viewModelCoroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                historyInteractor.saveData(word)
+            }
+        }
+    }
+
 }

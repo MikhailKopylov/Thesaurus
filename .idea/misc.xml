@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.2155" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_dialog_search.xml" value="0.20833333333333334" />
+        <entry key="app/src/main/res/layout/item_history.xml" value="0.10688956433637285" />
         <entry key="app/src/main/res/layout/item_translate.xml" value="0.20833333333333334" />
       </map>
     </option>
