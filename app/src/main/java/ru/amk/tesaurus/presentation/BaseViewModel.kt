@@ -5,26 +5,36 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
-import ru.amk.tesaurus.entity.AppState
+import ru.amk.tesaurus.entity.AppHistoryState
+import ru.amk.tesaurus.entity.AppResponseState
 
-abstract class BaseViewModel<T : AppState>(
+abstract class BaseViewModel<T : AppResponseState>(
     private val compositeDisposable: CompositeDisposable = CompositeDisposable(),
 ) : ViewModel() {
 
-    protected var job: Job? = null
-    abstract fun getData(word: String, isOnline: Boolean)
+    protected var translateJob: Job? = null
+    protected var historyJob: Job? = null
+    abstract fun requestData(word: String, isOnline: Boolean)
+    abstract fun getData()
     abstract fun handleError(error: Throwable)
+    abstract fun saveWordHistory(word: String)
 
     protected val viewModelCoroutineScope = CoroutineScope(
         SupervisorJob()
             + CoroutineExceptionHandler { _, throwable ->
             handleError(throwable)
         })
+    protected val _translateLiveData = MutableLiveData<AppResponseState>()
 
-    protected val _liveData = MutableLiveData<AppState>()
-    val liveData: LiveData<AppState>
+    val translateLiveData: LiveData<AppResponseState>
         get() {
-            return _liveData
+            return _translateLiveData
+        }
+    protected val _historyLiveData = MutableLiveData<AppHistoryState>()
+
+    val historyLiveData: LiveData<AppHistoryState>
+        get() {
+            return _historyLiveData
         }
 
     override fun onCleared() {
@@ -36,7 +46,8 @@ abstract class BaseViewModel<T : AppState>(
         viewModelCoroutineScope.coroutineContext.cancel()
     }
 
-    protected fun cancelJob(){
-        job?.cancel()
+    protected fun cancelJob() {
+        translateJob?.cancel()
+        historyJob?.cancel()
     }
 }

@@ -1,21 +1,20 @@
 package ru.amk.tesaurus.presentation.interactors
 
-import io.reactivex.Observable
-import ru.amk.tesaurus.entity.AppState
+import ru.amk.tesaurus.entity.AppResponseState
 import ru.amk.tesaurus.model.network.data.DataModel
 import ru.amk.tesaurus.model.repository.Repository
 
-class MainInteractor(
+class MainTranslateInteractor(
     private val remoteRepository: Repository<List<DataModel>>,
-    private val localRepository: Repository<List<DataModel>>
-) : Interactor<AppState> {
+    private val localRepository: Repository<List<DataModel>>,
+) : TranslateInteractor<AppResponseState> {
 
     override suspend fun getData(word: String, fromRemoteSource: Boolean):
-        AppState {
+        AppResponseState {
         return if (fromRemoteSource) {
-            AppState.Success(remoteRepository.getData(word))
+            AppResponseState.Success(remoteRepository.getData(word))
         } else {
-            AppState.Success(localRepository.getData(word))
+            AppResponseState.Success(localRepository.getData(word))
         }
     }
 }
