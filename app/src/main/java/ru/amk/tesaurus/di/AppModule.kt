@@ -2,11 +2,11 @@ package ru.amk.tesaurus.di
 
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import ru.amk.tesaurus.model.network.api.RetrofitImpl
-import ru.amk.tesaurus.model.network.data.DataModel
-import ru.amk.tesaurus.model.repository.Repository
-import ru.amk.tesaurus.model.repository.RepositoryImpl
-import ru.amk.tesaurus.model.repository.RoomDataBaseImpl
+import ru.amk.core.model.network.api.RetrofitImpl
+import ru.amk.core.model.network.data.DataModel
+import ru.amk.core.model.repository.Repository
+import ru.amk.core.model.repository.RepositoryImpl
+import ru.amk.core.model.repository.RoomDataBaseImpl
 
 internal const val REMOTE = "remote"
 internal const val LOCAL = "local"
