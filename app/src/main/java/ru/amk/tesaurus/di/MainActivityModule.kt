@@ -16,21 +16,26 @@ import ru.amk.tesaurus.presentation.interactors.MainTranslateInteractor
 object MainActivityModule {
 
     val activityModule = module {
+        scope(named("MainActivity")) {
+            factory {
+                MainTranslateInteractor(
+                    remoteRepository = get(named(REMOTE)),
+                    localRepository = get(named(LOCAL))
+                )
+            }
 
-        factory { MainTranslateInteractor(remoteRepository = get(named(REMOTE)), localRepository = get(named(LOCAL))) }
+            factory { MainActivityViewModel(get(), get()) }
 
-        factory { MainActivityViewModel(get(), get()) }
+            scoped { CompositeDisposable() }
 
-        single { CompositeDisposable() }
+            factory { MainHistoryInteractor(dataSourceHistory = get()) }
 
-        factory { MainHistoryInteractor(dataSourceHistory = get()) }
-
-        single<DataSourceHistory<List<RoomHistory>>> {
-            HistoryRepository(
-                Room.databaseBuilder(androidContext(), DatabaseHistory::class.java, "history_database")
-                    .build()
-            )
+            scoped<DataSourceHistory<List<RoomHistory>>> {
+                HistoryRepository(
+                    Room.databaseBuilder(androidContext(), DatabaseHistory::class.java, "history_database")
+                        .build()
+                )
+            }
         }
-
     }
 }

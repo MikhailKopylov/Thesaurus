@@ -5,7 +5,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
 import ru.amk.tesaurus.databinding.ActivityMainBinding
 import ru.amk.tesaurus.entity.AppHistoryState
 import ru.amk.tesaurus.entity.AppResponseState
@@ -18,7 +20,8 @@ import ru.amk.tesaurus.ui.view.BaseActivity
 
 class MainActivity : BaseActivity<AppResponseState>() {
 
-    override val model: MainActivityViewModel by viewModel()
+    private val scope: Scope by lazy { getKoin().createScope(this.toString(), named("MainActivity")) }
+    override val model: MainActivityViewModel by scope.inject()
     private lateinit var binding: ActivityMainBinding
     private var translateAdapter: TranslateAdapter? = null
     private var historyAdapter: HistoryAdapter? = null
