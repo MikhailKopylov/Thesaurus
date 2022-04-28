@@ -84,6 +84,11 @@ class MainActivity : BaseActivity<AppResponseState>() {
         }
     }
 
+    override fun onDestroy() {
+        scope.close()
+        super.onDestroy()
+    }
+
     fun renderHistoryData(appHistoryState: AppHistoryState) {
         when (appHistoryState) {
             is AppHistoryState.Success -> {
