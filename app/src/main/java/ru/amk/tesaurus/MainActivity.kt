@@ -5,12 +5,15 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.java.KoinJavaComponent.getKoin
 import ru.amk.core.entity.AppHistoryState
 import ru.amk.core.entity.AppResponseState
 import ru.amk.core.model.network.data.DataModel
+import ru.amk.core.utils.viewById
 import ru.amk.tesaurus.databinding.ActivityMainBinding
 import ru.amk.translate.presentation.MainActivityViewModel
 import ru.amk.translate.ui.adapter.HistoryAdapter
@@ -25,6 +28,10 @@ class MainActivity : BaseActivity<AppResponseState>() {
     private lateinit var binding: ActivityMainBinding
     private var translateAdapter: TranslateAdapter? = null
     private var historyAdapter: HistoryAdapter? = null
+
+    private val searchFab by viewById<FloatingActionButton>(R.id.search_fab)
+    private val historyRecyclerview by viewById<RecyclerView>(R.id.history_recyclerview)
+    private val translateRecyclerview by viewById<RecyclerView>(R.id.translate_recyclerview)
 
     private val onListItemClickListener: TranslateAdapter.OnListItemClickListener =
         object : TranslateAdapter.OnListItemClickListener {
@@ -41,16 +48,16 @@ class MainActivity : BaseActivity<AppResponseState>() {
         initViews()
         renderHistoryData()
         title = resources.getString(R.string.app_name)
-        binding.searchFab.setOnClickListener {
-            binding.translateRecyclerview.visibility = GONE
-            binding.historyRecyclerview.visibility = VISIBLE
+        searchFab.setOnClickListener {
+            translateRecyclerview.visibility = GONE
+            historyRecyclerview.visibility = VISIBLE
             val searchDialogFragment = SearchDialogFragment.newInstance()
             searchDialogFragment.setOnSearchClickListener(object :
                 SearchDialogFragment.OnSearchClickListener {
 
                 override fun onClick(searchWord: String) {
-                    binding.translateRecyclerview.visibility = VISIBLE
-                    binding.historyRecyclerview.visibility = GONE
+                    translateRecyclerview.visibility = VISIBLE
+                    historyRecyclerview.visibility = GONE
                     model.requestData(word = searchWord, isOnline = true)
                     model.saveWordHistory(word = searchWord)
                     model.translateLiveData.observe(this@MainActivity) {
@@ -85,9 +92,9 @@ class MainActivity : BaseActivity<AppResponseState>() {
                     showErrorScreen(getString(R.string.empty_server_response_on_success))
                 } else {
                     historyAdapter?.setData(data) ?: run {
-                        binding.historyRecyclerview.layoutManager =
+                        historyRecyclerview.layoutManager =
                             LinearLayoutManager(applicationContext)
-                        binding.historyRecyclerview.adapter =
+                        historyRecyclerview.adapter =
                             HistoryAdapter(data)
                     }
                 }
@@ -107,9 +114,9 @@ class MainActivity : BaseActivity<AppResponseState>() {
                 } else {
                     showViewSuccess()
                     translateAdapter?.setData(dataModel) ?: run {
-                        binding.translateRecyclerview.layoutManager =
+                        translateRecyclerview.layoutManager =
                             LinearLayoutManager(applicationContext)
-                        binding.translateRecyclerview.adapter =
+                        translateRecyclerview.adapter =
                             TranslateAdapter(onListItemClickListener, dataModel)
                     }
                 }
@@ -132,9 +139,9 @@ class MainActivity : BaseActivity<AppResponseState>() {
     }
 
     private fun initViews() {
-        binding.translateRecyclerview.layoutManager =
+        translateRecyclerview.layoutManager =
             LinearLayoutManager(applicationContext)
-        binding.translateRecyclerview.adapter = TranslateAdapter(onListItemClickListener, listOf())
+        translateRecyclerview.adapter = TranslateAdapter(onListItemClickListener, listOf())
     }
 
     private fun showErrorScreen(error: String?) {
