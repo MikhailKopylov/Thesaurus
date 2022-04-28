@@ -1,17 +1,16 @@
 package ru.amk.tesaurus.di
 
 import androidx.room.Room
-import io.reactivex.disposables.CompositeDisposable
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import ru.amk.tesaurus.model.dataSource.DatabaseHistory
-import ru.amk.tesaurus.model.dataSource.RoomHistory
-import ru.amk.tesaurus.model.repository.DataSourceHistory
-import ru.amk.tesaurus.model.repository.HistoryRepository
-import ru.amk.tesaurus.presentation.MainActivityViewModel
-import ru.amk.tesaurus.presentation.interactors.MainHistoryInteractor
-import ru.amk.tesaurus.presentation.interactors.MainTranslateInteractor
+import ru.amk.core.model.data_source.DatabaseHistory
+import ru.amk.core.model.data_source.RoomHistory
+import ru.amk.core.model.repository.DataSourceHistory
+import ru.amk.core.model.repository.HistoryRepository
+import ru.amk.translate.interactors.MainHistoryInteractor
+import ru.amk.translate.interactors.MainTranslateInteractor
+import ru.amk.translate.presentation.MainActivityViewModel
 
 object MainActivityModule {
 

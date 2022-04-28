@@ -5,9 +5,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.android.ext.android.getKoin
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.amk.tesaurus.databinding.ActivityMainBinding
 import ru.amk.tesaurus.entity.AppHistoryState
 import ru.amk.tesaurus.entity.AppResponseState
@@ -55,7 +53,6 @@ class MainActivity : BaseActivity<AppResponseState>() {
                     model.saveWordHistory(word = searchWord)
                     model.translateLiveData.observe(this@MainActivity) {
                         renderData(it)
-
                     }
                 }
             })
@@ -120,7 +117,7 @@ class MainActivity : BaseActivity<AppResponseState>() {
                 if (appResponseState.progress != null) {
                     binding.progressBarHorizontal.visibility = VISIBLE
                     binding.progressBarRound.visibility = GONE
-                    binding.progressBarHorizontal.progress = appResponseState.progress
+                    binding.progressBarHorizontal.progress = appResponseState.progress!!
                 } else {
                     binding.progressBarHorizontal.visibility = GONE
                     binding.progressBarRound.visibility = VISIBLE
