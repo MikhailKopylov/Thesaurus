@@ -25,8 +25,6 @@ object MainActivityModule {
 
             factory { MainActivityViewModel(get(), get()) }
 
-            scoped { CompositeDisposable() }
-
             factory { MainHistoryInteractor(dataSourceHistory = get()) }
 
             scoped<DataSourceHistory<List<RoomHistory>>> {

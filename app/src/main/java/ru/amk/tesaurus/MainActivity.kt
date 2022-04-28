@@ -5,16 +5,18 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
+import org.koin.core.scope.Scope
+import org.koin.java.KoinJavaComponent.getKoin
+import ru.amk.core.entity.AppHistoryState
+import ru.amk.core.entity.AppResponseState
+import ru.amk.core.model.network.data.DataModel
 import ru.amk.tesaurus.databinding.ActivityMainBinding
-import ru.amk.tesaurus.entity.AppHistoryState
-import ru.amk.tesaurus.entity.AppResponseState
-import ru.amk.tesaurus.model.network.data.DataModel
-import ru.amk.tesaurus.presentation.MainActivityViewModel
-import ru.amk.tesaurus.ui.adapter.HistoryAdapter
-import ru.amk.tesaurus.ui.adapter.TranslateAdapter
-import ru.amk.tesaurus.ui.fragments.SearchDialogFragment
-import ru.amk.tesaurus.ui.view.BaseActivity
+import ru.amk.translate.presentation.MainActivityViewModel
+import ru.amk.translate.ui.adapter.HistoryAdapter
+import ru.amk.translate.ui.adapter.TranslateAdapter
+import ru.amk.translate.ui.fragments.SearchDialogFragment
+import ru.amk.translate.ui.view.BaseActivity
 
 class MainActivity : BaseActivity<AppResponseState>() {
 
