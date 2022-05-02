@@ -1,15 +1,16 @@
 import Dependensies.APPCOMPAT
 import Dependensies.COIL
-import Dependensies.KOIN_CORE
 import Dependensies.CONSTRAINT
 import Dependensies.CORE
 import Dependensies.CORE_KTX
 import Dependensies.KOIN_ANDROID
 import Dependensies.KOIN_ANDROID_COMPAT
+import Dependensies.KOIN_CORE
 import Dependensies.KOTLIN_STDLIB
 import Dependensies.MATERIAL
 import Dependensies.ROOM_COMPILE
 import Dependensies.ROOM_RUNTIME
+import Dependensies.SPLASH_SCREEN
 import Dependensies.TEST
 import Dependensies.TEST_ESPRESSO
 import Dependensies.TEST_JUNIT
@@ -83,5 +84,7 @@ dependencies {
     kapt(ROOM_COMPILE)
     //Coil
     implementation(COIL)
+
+    implementation(SPLASH_SCREEN)
 }
 
