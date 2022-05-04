@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,6 +21,7 @@ import ru.amk.translate.ui.adapter.HistoryAdapter
 import ru.amk.translate.ui.adapter.TranslateAdapter
 import ru.amk.translate.ui.fragments.SearchDialogFragment
 import ru.amk.translate.ui.view.BaseActivity
+import java.util.concurrent.Executors
 
 class MainActivity : BaseActivity<AppResponseState>() {
 
@@ -42,7 +44,9 @@ class MainActivity : BaseActivity<AppResponseState>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val splashScreen = installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
         model.getData()
         initViews()
@@ -70,6 +74,12 @@ class MainActivity : BaseActivity<AppResponseState>() {
                 supportFragmentManager,
                 BOTTOM_SHEET_FRAGMENT_DIALOG_TAG
             )
+        }
+
+        splashScreen.setKeepOnScreenCondition { true }
+        Executors.newSingleThreadExecutor().execute {
+            Thread.sleep(3000)
+            splashScreen.setKeepOnScreenCondition { false }
         }
     }
 
