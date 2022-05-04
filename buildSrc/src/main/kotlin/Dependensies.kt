@@ -18,6 +18,7 @@ object Dependensies {
     private const val RETROFIT_OKHHTP_VERSION = "4.9.1"
     private const val RETROFIT_RXJAVA2_VERSION = "1.0.0"
     private const val RETROFIT_COROUTINES_VERSION = "0.9.2"
+    private const val SPLASH_SCREEN_VERSION = "1.0.0-beta02"
 
     const val CORE = "androidx.core:core-ktx:$CORE_VERSION"
     const val MATERIAL = "com.google.android.material:material:$MATERIAL_VERSION"
@@ -38,6 +39,8 @@ object Dependensies {
     const val ROOM_COMPILE = "androidx.room:room-compiler:$ROOM_VERSION"
 
     const val COIL = "io.coil-kt:coil:$COIL_VERSION"
+
+    const val SPLASH_SCREEN = "androidx.core:core-splashscreen:$SPLASH_SCREEN_VERSION"
 
     const val RETROFIT = "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     const val RETROFIT_GSON = "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
